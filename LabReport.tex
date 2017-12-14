@@ -32,19 +32,24 @@
 
 \pagestyle{fancy}
 \lhead{\kaishu~计算机系统报告~}
-\rhead{\kaishu~111111111 魏于翔~}
+\rhead{\kaishu~1111111111 魏于翔~}
 \cfoot{\thepage}
 
 %---------------------------------------------------------------------
 %	章节标题设置
 %---------------------------------------------------------------------
-\titleformat{\chapter}{\centering\zihao{-1}\heiti}{\thechapter}{1em}{}
+\titleformat{\chapter}{\centering\zihao{-2}\heiti}{\heiti \thechapter}{1em}{} % 黑体小二号
 \titlespacing{\chapter}{0pt}{*0}{*6}
+
+\titleformat{\section}{\zihao{-3}\heiti}{\heiti \thesection}{1em}{} % 黑体小三号
+%\titlespacing{\section}{0pt}{*0}{*6}
+
+\titleformat{\subsection}{\zihao{4}\heiti}{\heiti \thesubsection}{1em}{} % 黑体四号
 
 %---------------------------------------------------------------------
 %	摘要标题设置
 %---------------------------------------------------------------------
-\renewcommand{\abstractname}{\zihao{-3} 摘\quad 要}
+\renewcommand{\abstractname}{\centering\zihao{-2}\heiti 摘\quad 要}
 
 %---------------------------------------------------------------------
 %	参考文献设置
@@ -61,7 +66,7 @@
 %---------------------------------------------------------------------
 %	目录页设置
 %---------------------------------------------------------------------
-\titlecontents{chapter}[0em]{\songti\zihao{-4}}{\thecontentslabel\ }{}
+\titlecontents{chapter}[0em]{\heiti \zihao{-4}}{\heiti \thecontentslabel\ }{}
 {\hspace{.5em}\titlerule*[4pt]{$\cdot$}\contentspage}
 \titlecontents{section}[2em]{\vspace{0.1\baselineskip}\songti\zihao{-4}}{\thecontentslabel\ }{}
 {\hspace{.5em}\titlerule*[4pt]{$\cdot$}\contentspage}
@@ -95,7 +100,7 @@
 	%作者信息
 	{\makebox[4\ccwd][s]{姓\qquad 名：}}& ~\kaishu 魏\quad 于\quad 翔\\
 	
-	{\makebox[4\ccwd][s]{学\qquad 号：}}& ~\kaishu 11111111111 \\ 
+	{\makebox[4\ccwd][s]{学\qquad 号：}}& ~\kaishu 1111111111 \\ 
 
     {\makebox[4\ccwd][s]{学\qquad 院：}}& ~\kaishu 计算机科学与技术学院\\ 
    	
@@ -109,42 +114,59 @@
 
 \end{titlepage}
 
+
 %---------------------------------------------------------------------
 %  摘要页
 %---------------------------------------------------------------------
-\begin{abstract}
+\pagenumbering{Roman} %罗马数字
+
+\chapter *{ 摘 {\quad} 要}
+\setcounter{page}{1}
+\addcontentsline{toc}{chapter}{\heiti 摘要}  %单独插入摘要 以章的形式
 \begin{spacing}{1.5}
-	{\zihao{-4}
+{\zihao{-4}
 	此处为摘要
 	
 	此处为摘要\\[0.5cm]
 	
-	\textbf{关键字}：\quad 摘要 \quad 摘要 \quad 摘要 \quad 摘要
-	}
+	\textbf{ \heiti 关键字}：\quad 摘要 \quad 摘要 \quad 摘要 \quad 摘要
+}。
 \end{spacing}
-\end{abstract}
+
+
+\chapter *{ Abstract }
+\addcontentsline{toc}{chapter}{\heiti Abstract}  %单独插入摘要 以章的形式 可选 part, section, subsection
+\begin{spacing}{1.5}
+	{\zihao{-4}
+		此处为摘要
+		
+		此处为摘要\\[0.5cm]
+		
+		\textbf{ \heiti 关键字}：\quad 摘要 \quad 摘要 \quad 摘要 \quad 摘要
+	}。
+\end{spacing}
 
 %---------------------------------------------------------------------
 %  目录页
 %---------------------------------------------------------------------
 \tableofcontents % 生成目录
 
+
 %---------------------------------------------------------------------
 %  实验一
 %---------------------------------------------------------------------
+
 \chapter{Y86-64指令集体系结构}
+\pagenumbering{arabic} %改为阿拉伯数字
 \setcounter{page}{1}
 \begin{spacing}{1.5} %行间距?
 \songti\zihao{-4}
 \section{基本变量}
 	CPU中共有15个64位的程序寄存器,指示指令的PC的长度也为64位。CPU还有三个标志位,分别是零标志zf、符号标志sf、溢出标志of,这三个标志位统称为CC。
 	
-\section{Y86-64指令}
-	Y86-64指令集基本上是x86-64指令集的一个自己。它只包括8字节整数操作，寻址方式较少，操作也较少。图1.2中，左边是指令的汇编码，右边是字节编码。可以看出，Y86-64指令每条需要1~10字节不等，这取决于需要哪些字段。每条指令的第一个字节表明指令的类型。这个字节分为两个部分，每部分4位：高4位是代码(code)部分，低4位是功能(function)部分。
-	
 	我们要实现的CPU还增加了一条指令IADDQ，功能如下图1.3：
 	
-	\begin{figure}[htb] %若换为H表示固定死图片
+	\begin{figure}[htb]
 		\centering
 		\includegraphics [width=1\textwidth]{figure/IADDQ.png}
 		\caption{IADDQ指令}\label{Y86-64}
@@ -152,58 +174,11 @@
 
 \section{指令编码}
 
-	很多指令都会有一个字节用来表示所用到的寄存器。每个寄存器都用一个数字来表示,使用RNONE(0xF)代表没有用到寄存器。有些指令会有四个字节的立即数,立即数在指令中以小端模式存储。
 	
 \section{Y86-64异常}
-
+	
 \section{Y86-64程序}
-	直接写Y86-64的机器代码,不仅很麻烦,而且容易出错。对日常使用的那些汇编指令集,可以先写汇编代码,然后由汇编器转成机器代码。对于X86-64汇编语言来说,有nasm、masm等汇编器,而对于这里用到的Y86-64汇编语言,也有相应的汇编器yas。通过yas,可以将Y86-64汇编转成机器代码。
 	
-	下面是一个Y86-64转成机器码的实例：
-	
-	\begin{lstlisting}
-	                            | # Execution begins at address 0 
-	0x000:                      | 	.pos 0
-	0x000: 30f40002000000000000 | 	irmovq stack, %rsp  # stack pointer
-	0x00a: 803800000000000000   | 	call main		# Execute main program
-	0x013: 00                   | 	halt			# Terminate program 
-	| 
-	| # Array of 4 elements
-	0x018:                      | 	.align 8
-	0x018: 0d000d000d000000     | array:	.quad 0x000d000d000d
-	0x020: c000c000c0000000     | 	.quad 0x00c000c000c0
-	0x028: 000b000b000b0000     | 	.quad 0x0b000b000b00
-	0x030: 00a000a000a00000     | 	.quad 0xa000a000a000
-	| 
-	0x038: 30f71800000000000000 | main:	irmovq array,%rdi
-	0x042: 30f60400000000000000 | 	irmovq $4,%rsi
-	0x04c: 805600000000000000   | 	call sum		# sum(array, 4)
-	0x055: 90                   | 	ret
-	| 
-	| # long sum(long *start, long count)
-	| # start in %rdi, count in %rsi
-	0x056: 30f80800000000000000 | sum:	irmovq $8,%r8        # Constant 8
-	0x060: 30f90100000000000000 | 	irmovq $1,%r9	     # Constant 1
-	0x06a: 6300                 | 	xorq %rax,%rax	     # sum = 0
-	0x06c: 6266                 | 	andq %rsi,%rsi	     # Set CC
-	0x06e: 708700000000000000   | 	jmp     test         # Goto test
-	0x077: 50a70000000000000000 | loop:	mrmovq (%rdi),%r10   # Get *start
-	0x081: 60a0                 | 	addq %r10,%rax       # Add to sum
-	0x083: 6087                 | 	addq %r8,%rdi        # start++
-	0x085: 6196                 | 	subq %r9,%rsi        # count--.  Set CC
-	0x087: 747700000000000000   | test:	jne    loop          # Stop when 0
-	0x090: 90                   | 	ret                  # Return
-	| 
-	| # Stack starts here and grows to lower addresses
-	0x200:                      | 	.pos 0x200
-	0x200:                      | stack:
-
-	\end{lstlisting}
-
-%\section{一些Y86-64指令的详情}
-%	对于pushq的具体执行过程，有两种不同的约定: 1. 压入\%rsp的原始值，2. 压入减去8的\%rsp的值。在我们的CPU中采用的是跟x86-64一样的设计，即压入\%rsp的旧值。
-	
-%	对于popq也是一样，跟x86-64一样，
 
 \end{spacing}
 
@@ -217,9 +192,7 @@
 	
 \section{指令微操作}
 	
-
 \section{SEQ硬件结构}
-
 
 \section{SEQ的时序}
 
@@ -234,20 +207,18 @@
 	
 \section{取指阶段}	
 
-	
 \section{译码和写回阶段}
-
-
+	
 \section{执行阶段}
-
+	
 
 \section{访存阶段}
 	
-
 \section{更新PC阶段}
 	
 \end{spacing}
 
+SEQ的全部实现代码见附录I。
 
 
 %---------------------------------------------------------------------
@@ -259,12 +230,24 @@
 \section{实现过程}
 
 \subsection{顶层模块设计}
-
+	
 
 \subsection{Fetch阶段设计}
-
 	
 \subsection{Decode阶段设计}
+	分析3.2中的硬件结构可知，Decode阶段需要的输入有clk，rst，icode，ifun，rA，rB，输出有srcA，srcB。本阶段主要根据icode来确定srcA和srcB的值，最终从寄存器取值是在regfile模块进行的。
+	\begin{lstlisting}
+	module	Decode(
+	input wire clk,
+	input wire rst,
+	input wire [3:0]icode,
+	input wire [3:0]ifun,
+	input wire [3:0]rA,
+	input wire [3:0]rB,
+	output reg [3:0]srcA,
+	output reg [3:0]srcB
+	);
+	\end{lstlisting}
 	
 
 \subsection{Execute阶段设计}
@@ -274,19 +257,28 @@
 	
 
 \subsection{Write back阶段实现}
+	Write back阶段的硬件结构与译码阶段相同，但该阶段的工作是向寄存器中写入值，应有的输入有clk,rst,Cnd,icode,rA,rB,输出有dstM,dstE，该输出会作为regfile的控制逻辑。dstM和dstE是根据icode和Cnd的值从rA，rB中选择的。以IRRMOVQ为例：
+	
 
-
+\subsection{PC update阶段设计}
+	
+\subsection{regfile设计}
+	
+\subsection{inst\_rom设计}
+	
+	
 \section{结果模拟}
 	
 \end{spacing}
 
 %---------------------------------------------------------------------
-%  实验感想
+%  总结
 %---------------------------------------------------------------------
-\titleformat{\chapter}{\centering\zihao{-1}\heiti}{}{1em}{}
-\chapter{实验总结}
+%\titleformat{\chapter}{\centering\zihao{-2}\heiti}{}{1em}{}
+\addcontentsline{toc}{chapter}{结论}
+\chapter *{结 {\quad} 论}
 \begin{spacing}{1.5}
-	没什么好说的。
+	
 \end{spacing}
 
 %---------------------------------------------------------------------
@@ -330,7 +322,25 @@
 下面是一个MATLAB程序的事例，使用了Package mcode，它能较好还原MATLAB本身的编写风格。
 \begin{lstlisting}
 
-%代码
+\begin{lstlisting}
+	module Write(
+	input wire clk,
+	input wire rst,
+	input wire Cnd,
+	input wire [3:0] icode,
+	input wire [3:0] rA,
+	input wire [3:0] rB,
+	output reg [3:0] dstM,
+	output reg [3:0] dstE
+	);
+	\end{lstlisting}
+	
+	\begin{lstlisting}
+	`IRRMOVQ:	begin  // 也是CMOV
+		dstE = Cnd == 1 ? rB : `RNONE;
+		dstM = `RNONE;
+	end
+\end{lstlisting}
 
 \end{lstlisting}
 \end{spacing}
